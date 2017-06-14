@@ -1,0 +1,21 @@
+<link rel="import" href="test-tag.html">
+
+<template>
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+  <test-tag></test-tag>
+</template>
+
+<script>
+'use strict';
+import Test from './../module/test';
+
+export default class TestApp {
+  constructor() {
+    new Test();
+  }
+}
+</script>
