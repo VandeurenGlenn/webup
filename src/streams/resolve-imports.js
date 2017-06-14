@@ -8,14 +8,14 @@ import fs from 'mz/fs';
 const { readFile } = fs;
 
 class ResolveImports extends Transform {
-  constructor({plugins, include, exclude, cwd}) {
+  constructor({plugins, include, exclude, cwd, sources}) {
     // set objectMode to true for reading & writing
     super({objectMode: true});
     this.cwd = cwd;
     this.plugins = plugins;
     this.duplicates = {};
     this.set = {};
-
+    this.sources = sources;
     this.filter = createFilter(include, exclude);
   }
 
@@ -51,9 +51,19 @@ class ResolveImports extends Transform {
           // resolve path
           if (importee.includes('../')) {
             importee = resolve(root, importee);
-          } else {
-            importee = join(root, importee);
+          } else if (!importee.includes(root)) {
+            // iterate trough the sources
+            let isNotHost = true;
+            for (const source of self.sources) {
+              if (source === importee) {
+                isNotHost = false;
+              }
+            }
+            if (isNotHost) {
+              importee = join(root, importee);
+            }
           }
+
           // when importee is included load & push it
           if (self.filter(importee) && !self.set[importee] && !importee.includes('.html_.')) {
             const contents = await readFile(importee);
@@ -89,7 +99,7 @@ class ResolveImports extends Transform {
   }
 
   isValid(importee) {
-    if (importee.includes('link') || importee.includes('script')) {
+    if (importee.includes('<link') || importee.includes('<script')) {
       return true;
     }
     return false;
@@ -97,13 +107,13 @@ class ResolveImports extends Transform {
 
   isLink(importee) {
     // check if rel property is valid
-    if (importee.includes('rel="stylesheet"') ||
-        importee.includes('rel="import"')) return true;
+    if (importee.includes('<link') &&
+        importee.includes('rel="')) return true;
     return false;
   }
 
   isJs(importee) {
-    if (importee.includes('src="')) return true;
+    if (importee.includes('<script') && importee.includes('src="')) return true;
     return false;
   }
 }
