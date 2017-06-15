@@ -1,6 +1,7 @@
 var assert = require('assert');
 var webup = require('./../dist/webup');
 
+// TODO: check if all errors are covered (test errors)
 describe('description', () => {
   // it('bundles module', (done) => {
   //   try {
@@ -27,7 +28,7 @@ describe('description', () => {
       // root: '.build',
       cwd: `${__dirname}/html`,
       sources: ['./test/html/**/*']
-    }).then(() => done()).catch((err) => console.log(err));
+    }).then(() => done()).catch((err) => done(err));
   });
 
   it('bundles html using the http2 preset', (done) => {
@@ -46,7 +47,7 @@ describe('description', () => {
       // root: '.build',
       cwd: `${__dirname}/html`,
       sources: ['./test/html/**/*']
-    }).then(() => done()).catch((err) => console.log(err));
+    }).then(() => done()).catch((err) => done(err));
   });
 
 

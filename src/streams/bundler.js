@@ -26,6 +26,12 @@ class Bundler extends Transform {
   }
 
   createEntrys({entry, shell, fragments}) {
+    if (!entry || !shell) {
+      this.emit('error',
+        new Error(entry ? 'shell undefined' : 'entry undefined')
+      );
+      return;
+    }
     return [entry, shell, ...fragments];
   }
 

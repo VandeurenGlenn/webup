@@ -4,6 +4,10 @@ import build from './build';
 import bundle from './bundle';
 import ensureArray from './utils/ensure-array';
 import { extend, clone } from 'underscore';
+import sourceMapSupport from 'source-map-support';
+
+// setup sourceMap support
+sourceMapSupport.install();
 
 const defaultOptions = {
   entry: null,
@@ -13,6 +17,7 @@ const defaultOptions = {
   plugins: [],
   include: null,
   fragments: [],
+  sources: [],
   presets: ['default'],
   exclude: ['reload/**/*.js'] // exclude common libs
 }
@@ -74,17 +79,24 @@ const requirePresets = options => {
 }
 
 const validateOptions = options => {
-  const expected = ['entry', 'dest', 'sourceMap', 'presets', 'sources'];
+  const expected = ['entry', 'dest', 'sourceMap', 'presets'];
   for (const option of expected) {
-    if (options.type === 'html' && option === 'sources') {
-      if (!Boolean(options[option])) {
-        return Promise.reject(`expects sources when building html, be sure you added them in your config`);
-      }
-    } else if (!Boolean(options[option]) && options.type !== 'html' && option !== 'sources') {
-      return Promise.reject(`${option} is undefined`);
+    if (!options[option]) {
+      return Promise.reject(new Error(`${option} is undefined`));
     }
   }
+  return Promise.resolve(options);
+}
 
+// when building html expect sources do be defined.
+const validateOptionsType = options => {
+  if (options.type === 'dom') {
+    if (!Boolean(options.sources) || !Boolean(options.shell)) {
+      return Promise.reject(
+        new Error(`options.${options.sources ? 'shell' : 'sources'} undefined, checkout docs to learn more.`)
+      );
+    }
+  }
   return Promise.resolve(options);
 }
 /**
@@ -101,6 +113,7 @@ export default options => {
     options = extend(defaultOptions, options);
     async function gen() {
       try {
+        options = await validateOptions(options);
         if (options.entry.includes('.html')) {
           options.type = 'dom';
         } else if (options.entry.includes('.js')) {
@@ -108,7 +121,7 @@ export default options => {
         } else {
           return reject(`${extname(options.entry)} is not supported`);
         }
-        options = await validateOptions(options);
+        options = await validateOptionsType(options);
         const presets = await requirePresets(options);
         const promises = [];
         for (const preset of presets) {
