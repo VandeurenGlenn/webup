@@ -40,49 +40,51 @@ class ResolveImports extends Transform {
       // callback null so the host doesn't come after it's children.
       callback(null, null);
     }
-    return gen(this);
+    gen(this);
   }
 
   handleImports(root, imports) {
-    async function gen(self) {
-      if (imports && imports.length > 0) {
-        for (let importee of imports) {
-          importee = await self.handleImport(importee);
-          // resolve path
-          if (importee.includes('../')) {
-            importee = resolve(root, importee);
-          } else if (!importee.includes(root)) {
-            // iterate trough the sources
-            let isNotHost = true;
-            for (const source of self.sources) {
-              if (source === importee) {
-                isNotHost = false;
+    return new Promise((resolve, reject) => {
+      async function gen(self) {
+        if (imports && imports.length > 0) {
+          for (let importee of imports) {
+            importee = await self.handleImport(importee);
+            // resolve path
+            if (importee.includes('../')) {
+              importee = resolve(root, importee);
+            } else if (!importee.includes(root)) {
+              // iterate trough the sources
+              let isNotHost = true;
+              for (const source of self.sources) {
+                if (source === importee) {
+                  isNotHost = false;
+                }
+              }
+              if (isNotHost) {
+                importee = join(root, importee);
               }
             }
-            if (isNotHost) {
-              importee = join(root, importee);
+
+            // when importee is included load & push it
+            if (self.filter(importee) && !self.set[importee] && !importee.includes('.html_.')) {
+              const contents = await readFile(importee);
+              let file = new vinylFile({path: importee, contents: contents});
+
+              // run load
+              file = await loadImport(file, self.plugins);
+              self.set[importee] = file.contents;
+              self.push(file);
+              const done = await self.handleImports(dirname(importee), self.getImports(file.contents.toString()));
+              // return reslve();
+            } else {
+              // return resolve();
             }
           }
-
-          // when importee is included load & push it
-          if (self.filter(importee) && !self.set[importee] && !importee.includes('.html_.')) {
-            const contents = await readFile(importee);
-            let file = new vinylFile({path: importee, contents: contents});
-
-            // run load
-            file = await loadImport(file, self.plugins);
-            self.set[importee] = file.contents;
-            self.push(file);
-            const done = await self.handleImports(dirname(importee), self.getImports(file.contents.toString()));
-            // return reslve();
-          } else {
-            // return resolve();
-          }
         }
+        resolve();
       }
-      return Promise.resolve();
-    }
-    return gen(this);
+      gen(this);
+    });
   }
 
   handleImport(importee) {

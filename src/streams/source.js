@@ -6,9 +6,9 @@ import { extname } from 'path';
 import { load } from './../utils/plugins-runner';
 
 class Source extends Readable {
-  constructor({sources, plugins}) {
+  constructor({sources, shell, fragments, plugins}) {
     super({objectMode: true});
-    this.sources = sources;
+    this.sources = [...sources, ...fragments];
     this.plugins = plugins;
     this.set = {};
     return this.loadFile();
