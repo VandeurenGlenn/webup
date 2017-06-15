@@ -12,10 +12,6 @@ class Source extends Transform {
     super({objectMode: true});
     this.css = [];
     this.js = [];
-    // this.on('finish', () => {
-    //   this.pushFiles(this.css);
-    //   this.pushFiles(this.js);
-    // });
   }
 
   pushFiles(files) {
@@ -32,7 +28,7 @@ class Source extends Transform {
   }
 
   queryStyles(node) {
-    if (node.tagName === 'style'  || node.tagName === 'template') {
+    if (node.tagName === 'style' || node.tagName === 'template') {
       return node;
     }
   }
@@ -112,7 +108,8 @@ class Source extends Transform {
     // push css & js to the stream
     this.pushFiles(this.css);
     this.pushFiles(this.js);
-
+    this.css = [];
+    this.js = [];
     return new Buffer(contents);
   }
 }
