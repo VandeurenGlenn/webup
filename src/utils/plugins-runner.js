@@ -1,4 +1,5 @@
 'use strict';
+import { normalize } from 'path';
 
 const run = (file, plugins, fn) => {
   async function gen() {
@@ -7,9 +8,9 @@ const run = (file, plugins, fn) => {
       if (plugin[fn]) {
         const { path, contents } = await plugin[fn](file);
         file.contents = contents;
-        file.path = path;
       }
     }
+    file.path = normalize(file.path);
     return Promise.resolve(file);
   }
   return gen();
