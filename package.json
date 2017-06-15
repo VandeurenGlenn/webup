@@ -1,6 +1,6 @@
 {
   "name": "webup",
-  "version": "1.0.0-alpha-3",
+  "version": "1.0.0-rc",
   "description": "yet another es6/html bundler",
   "main": "dist/webup.js",
   "files": [
