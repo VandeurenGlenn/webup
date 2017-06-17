@@ -25,14 +25,17 @@ class Bundler extends Transform {
     });
   }
 
-  createEntrys({entry, shell, fragments}) {
-    if (!entry || !shell) {
+  /**
+   * @return {array} containing entry & fragments
+   */
+  createEntrys({entry, fragments}) {
+    if (!entry || !fragments) {
       this.emit('error',
-        new Error(entry ? 'shell undefined' : 'entry undefined')
+        new Error(entry ? 'fragments undefined' : 'entry undefined')
       );
       return;
     }
-    return [entry, shell, ...fragments];
+    return [entry, ...fragments];
   }
 
 }
