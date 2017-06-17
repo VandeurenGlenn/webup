@@ -1,7 +1,5 @@
 import { Bundler } from 'polymer-bundler';
-import { Analyzer } from 'polymer-analyzer';
 
-// TODO: iterate through urloader(s) ?
 export default (entrys, {
   cwd,
   inlineJs,
@@ -9,7 +7,7 @@ export default (entrys, {
   exclude,
   rewriteUrlsInTemplates,
   stripComments,
-  urlLoader,
+  analyzer,
   strategy,
   urlMapper
 }) => {
@@ -23,10 +21,8 @@ export default (entrys, {
       stripComments: stripComments
     }
 
-    if (urlLoader) {
-      config.analyzer = new Analyzer({
-        urlLoader: urlLoader
-      });;
+    if (analyzer) {
+      config.analyzer = analyzer;
     }
 
     if (strategy) {
