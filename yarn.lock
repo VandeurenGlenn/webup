@@ -1437,7 +1437,7 @@ pinkie@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
 
-polymer-analyzer@^2.0.0, polymer-analyzer@^2.1.0:
+polymer-analyzer@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/polymer-analyzer/-/polymer-analyzer-2.1.0.tgz#f6ddc561626194774dfc17cdb49d73ea62c9bcfd"
   dependencies:
@@ -1880,12 +1880,18 @@ webup-plugin-split@^1.0.1:
     dom5 "^2.3.0"
     parse5 "^3.0.2"
 
-webup-preset-default@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/webup-preset-default/-/webup-preset-default-1.0.1.tgz#758b50431d7ae3730a8a632731fc2a325feeba83"
+webup-preset-bundle@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/webup-preset-bundle/-/webup-preset-bundle-1.0.0.tgz#007f0859a548e082c43531ffdc02dda756fdd4d8"
   dependencies:
-    polymer-analyzer "^2.1.0"
     polymer-bundler "^2.0.3"
+
+webup-preset-default@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/webup-preset-default/-/webup-preset-default-1.0.2.tgz#63f47d9784210d7e55202f4aa192c0f12fd73c62"
+  dependencies:
+    webup-preset-bundle "^1.0.0"
+    webup-preset-http2 "^1.0.1"
 
 webup-preset-http2@^1.0.1:
   version "1.0.1"
