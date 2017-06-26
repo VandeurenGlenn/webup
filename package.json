@@ -24,7 +24,7 @@
     "underscore": "^1.8.3",
     "vinyl": "^2.0.2",
     "vinyl-read": "^1.0.0",
-    "webup-preset-default": "^1.0.0"
+    "webup-preset-default": "^1.0.2"
   },
   "scripts": {
     "test": "mocha"

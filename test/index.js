@@ -14,41 +14,38 @@ describe('description', () => {
 
   it('bundles html using the default preset', (done) => {
     webup({
-      entry: 'index.html',
-      shell: 'test-app.html',
+      entry: 'test/html/index.html',
+      shell: 'test/html/test-app.html',
       dest: 'build/index.html',
       fragments: [
-        'views/view-0.html',
-        'views/view-1.html',
-        'views/view-2.html',
-        'views/view-3.html'
+        'test/html/views/view-0.html',
+        'test/html/views/view-1.html',
+        'test/html/views/view-2.html',
+        'test/html/views/view-3.html'
       ],
-      presets: ['default', 'http2'],
+      presets: ['default'],
       // external: ['backed'],
       // root: '.build',
-      cwd: `${__dirname}/html`,
       sources: ['./test/html/**/*']
     }).then(() => done()).catch((err) => done(err));
   });
 
   it('bundles html using the http2 preset', (done) => {
     webup({
-      entry: 'index.html',
-      shell: 'test-app.html',
+      entry: 'test/html/index.html',
+      shell: 'test/html/test-app.html',
       dest: 'build/index.html',
       fragments: [
-        'views/view-0.html',
-        'views/view-1.html',
-        'views/view-2.html',
-        'views/view-3.html'
+        'test/html/views/view-0.html',
+        'test/html/views/view-1.html',
+        'test/html/views/view-2.html',
+        'test/html/views/view-3.html'
       ],
       presets: ['http2'],
       // external: ['backed'],
       // root: '.build',
-      cwd: `${__dirname}/html`,
       sources: ['./test/html/**/*']
     }).then(() => done()).catch((err) => done(err));
   });
-
 
 });

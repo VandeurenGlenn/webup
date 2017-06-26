@@ -6,8 +6,8 @@ const run = (file, plugins, fn) => {
     for (const plugin of plugins) {
       // TODO: add error handler for when path or contents aren't defined.
       if (plugin[fn]) {
-        const { path, contents } = await plugin[fn](file);
-        file.contents = contents;
+        file = await plugin[fn](file);
+
       }
     }
     file.path = normalize(file.path);
@@ -22,4 +22,8 @@ export const load = (file, plugins) => {
 
 export const loadImport = (file, plugins) => {
   return run(file, plugins, 'loadImport');
+}
+
+export const bundle = (file, plugins) => {
+  return run(file, plugins, 'bundle');
 }

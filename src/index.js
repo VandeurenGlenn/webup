@@ -1,10 +1,11 @@
 'use strict';
 import { resolve, extname } from 'path';
 import build from './build';
-import bundle from './bundle';
+// import bundle from './bundle';
 import ensureArray from './utils/ensure-array';
 import { extend, clone } from 'underscore';
 import sourceMapSupport from 'source-map-support';
+import globals from './utils/globals';
 
 // setup sourceMap support
 sourceMapSupport.install();
@@ -50,27 +51,38 @@ const requirePlugins = options => {
   }
 }
 
+const requirePreset = (preset, options, cb) => {
+  if (Array.isArray(preset)) {
+    for (const task of preset) {
+      if (typeof task === 'object') {
+        cb(null, task);
+      } else {
+        cb(Promise.reject(`${name} should only export an array or object`), null);
+      }
+    }
+  } else if (typeof preset === 'object') {
+    cb(null, preset);
+  } else if (typeof preset === 'string') {
+    const name = `webup-preset-${preset}`;
+    preset = require(name)(options);
+    requirePreset(preset, options, (error, item) => {
+      cb(null, item);
+    });
+  } else {
+    cb(Promise.reject(`${name} invalid type`), null);
+  }
+}
+
 const requirePresets = options => {
   try {
     const set = [];
     const presets = ensureArray(options.presets).map(preset => {
-      const name = `webup-preset-${preset}`;
-      preset = require(name)(options);
-      if (Array.isArray(preset)) {
-        for (const task of preset) {
-          if (typeof task === 'object') {
-            set.push(task);
-          } else {
-            return Promise.reject(`${name} should only export an array or object`);
-          }
+      requirePreset(preset, options, (error, item) => {
+        if (error) {
+          return error;
         }
-      } else {
-        if (typeof preset === 'object') {
-          set.push(preset);
-        } else {
-          return Promise.reject(`${name} should only export an array or object`);
-        }
-      };
+        set.push(item);
+      });
     });
     return Promise.resolve(set);
   } catch (error) {
@@ -91,9 +103,10 @@ const validateOptions = options => {
 // when building html expect sources do be defined.
 const validateOptionsType = options => {
   if (options.type === 'dom') {
-    if (!Boolean(options.sources) || !Boolean(options.shell)) {
+    // check if html module or app (an app is defined as in having a shell & fragments).
+    if (!Boolean(options.fragments) && Boolean(options.shell) || !Boolean(options.shell) && Boolean(options.fragments)) {
       return Promise.reject(
-        new Error(`options.${options.sources ? 'shell' : 'sources'} undefined, checkout docs to learn more.`)
+        new Error(`options.${options.fragments ? 'shell' : 'fragments'} undefined, checkout docs to learn more.`)
       );
     }
   }
@@ -131,10 +144,15 @@ export default options => {
           const fragments = ensureArray(config.fragments);
           // get the plugins
           const plugins = await requirePlugins(config);
-          // extend config with preset plugins & fragments
-          await build(extend(config, {plugins: plugins, fragments: fragments}));
 
-          await bundle(extend(config, {plugins: plugins, fragments: fragments}));
+          const id = Math.random().toString(36).slice(2);
+
+          globals({namespace: id});
+
+          // extend config with preset plugins & fragments
+          await build(extend(config, {plugins: plugins, fragments: fragments, id: id}));
+
+          // await bundle(extend(config, {plugins: plugins, fragments: fragments, id: id}));
         }
         indicate();
       } catch (error) {

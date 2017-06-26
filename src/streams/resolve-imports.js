@@ -1,14 +1,15 @@
 'use strict';
 import { Transform } from 'stream';
-import { resolve, dirname, join } from 'path';
+import { resolve, dirname, join, normalize, relative } from 'path';
 import {createFilter} from 'rollup-pluginutils';
 import { loadImport } from './../utils/plugins-runner';
 import vinylFile from 'vinyl';
+import globals from './../utils/globals';
 import fs from 'mz/fs';
 const { readFile } = fs;
 
 class ResolveImports extends Transform {
-  constructor({plugins, include, exclude, cwd, sources}) {
+  constructor({plugins, include, exclude, cwd, sources, id, entry}) {
     // set objectMode to true for reading & writing
     super({objectMode: true});
     this.cwd = cwd;
@@ -17,6 +18,13 @@ class ResolveImports extends Transform {
     this.set = {};
     this.sources = sources;
     this.filter = createFilter(include, exclude);
+    this.defaults();
+    this.sharedImports = new Map();
+    this.root = dirname(entry);
+  }
+
+  defaults() {
+    this.imports = new Map();
   }
 
   getImports(doc) {
@@ -30,13 +38,49 @@ class ResolveImports extends Transform {
     async function gen(self) {
 
       if (!self.set[file.path]) {
+        // add host to set
         self.set[file.path] = file.contents;
         // push host so we contain order.
         self.push(file);
       } else {
         self.duplicates[file.path] = true;
       }
-      const imports = await self.handleImports(dirname(file.path), self.getImports(file.contents.toString()))
+
+      // read imports
+      const imports = await self.handleImports(dirname(file.path), self.getImports(file.contents.toString()));
+
+      // TODO: create & implement dependency bundler
+      // const sharedImports = new Map();
+      //
+      // for (const i of self.imports) {
+      //   const id = i[0];
+      //   const value = i[1];
+      //   const resolvedPath = resolve(dirname(file.path), id);
+      //
+      //   const counts = self.sharedImports.get(resolvedPath);
+      //   if (counts > 1) {
+      //     // add to the host its sharedImports so we can iterate trough them
+      //     // when the project is more mature ...
+      //     // in the meantime using polymer-bundler & polymer-analyzer to achieve this
+      //     sharedImports.set(id, resolvedPath);
+      //   }
+      // }
+      // get bundle
+      const bundle = globals('bundle') || new Map();
+      // set bundle
+      bundle.set(relative(self.root, file.path), {
+        code: file.contents,
+        imports: self.imports
+        // commented untill dependency bundler is implemented
+        // sharedImports: sharedImports
+      });
+
+      // save bundle
+      globals('bundle', bundle);
+
+      // reset imports & sharedImports
+      self.defaults();
+
       // callback null so the host doesn't come after it's children.
       callback(null, null);
     }
@@ -48,35 +92,45 @@ class ResolveImports extends Transform {
       if (imports && imports.length > 0) {
         for (let importee of imports) {
           importee = await self.handleImport(importee);
+          let id = importee.src || importee.href;
+          self.imports.set(id, importee);
           // resolve path
-          if (importee.includes('../')) {
-            importee = resolve(root, importee);
-          } else if (!importee.includes(root)) {
+          if (id.includes('../')) {
+            id = resolve(root, id);
+          } else if (!id.includes(root)) {
             // iterate trough the sources to check if dependency of dependencies
+            // TODO: iterate trough entrys .... (shell, entry, fragments) whenever sources isn't used
             let isNotHost = true;
             for (const source of self.sources) {
-              if (source === importee) {
+              if (source === id) {
                 isNotHost = false;
               }
             }
             if (isNotHost) {
-              importee = join(root, importee);
+              id = join(root, id);
             }
           }
+          // TODO: create importsMap ...
+          if (self.filter(id) && !id.includes('.html_.')) {
+            if (!self.duplicates[id]) {
+              if (self.sharedImports.get(id)) {
+                self.sharedImports.set(id, (self.sharedImports.get(id) + 1));
+              } else {
+                self.sharedImports.set(id, 1);
+              }
+              // return resolve();
+            } else if (!self.set[id]) {
+              // when id is included load & push it
+              const contents = await readFile(id);
+              let file = new vinylFile({path: id, contents: contents});
 
-          // when importee is included load & push it
-          if (self.filter(importee) && !self.set[importee] && !importee.includes('.html_.')) {
-            const contents = await readFile(importee);
-            let file = new vinylFile({path: importee, contents: contents});
-
-            // run load
-            file = await loadImport(file, self.plugins);
-            self.set[importee] = file.contents;
-            self.push(file);
-            const done = await self.handleImports(dirname(importee), self.getImports(file.contents.toString()));
-            // return reslve();
-          } else {
-            // return resolve();
+              // run load
+              file = await loadImport(file, self.plugins);
+              self.set[id] = file.contents;
+              self.push(file);
+              const done = await self.handleImports(dirname(id), self.getImports(file.contents.toString()));
+              // return reslve();
+            }
           }
         }
       }
@@ -87,13 +141,22 @@ class ResolveImports extends Transform {
 
   handleImport(importee) {
     importee = String(importee);
+    const object = {};
     if (this.isValid(importee)) {
+      object.isValid = true;
+      object.code = importee;
       if (this.isJs(importee)) {
-        importee = importee.match('src="(.*)"')[0].replace('src="', '').replace('.js"', '.js');
+        importee = importee.match('src="(.*)"')[0]
+                           .replace('src="', '').replace('.js"', '.js');
+        object.nodeName = 'script';
+        object.src = importee;
       } else if (this.isLink(importee)) {
-        importee = importee.match('href="(.*)"')[0].replace('href="', '').replace('"', '');
+        importee = importee.match('href="(.*)"')[0]
+                           .replace('href="', '').replace('"', '');
+        object.nodeName = 'link';
+        object.href = importee;
       }
-      return importee;
+      return new Object(object);
     }
     return console.warn(`invalid import::${importee}`);
   }

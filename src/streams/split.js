@@ -1,28 +1,35 @@
 'use strict';
 import { Transform } from 'stream';
-import { dirname } from 'path';
+import { dirname, resolve, relative } from 'path';
 import { warn } from './../utils/logger';
-
+import globals from './../utils/globals';
 import { queryAll } from 'dom5';
 import { parse } from 'parse5';
 import vinylFile from 'vinyl';
 
 class Source extends Transform {
-  constructor() {
+  constructor({entry}) {
     super({objectMode: true});
     this.css = [];
     this.js = [];
+    this.root = dirname(entry);
   }
 
   pushFiles(files) {
     for (const file of files) {
       this.push(new vinylFile(file));
+      // add css, js to bundle
+      globals('bundle').set(file.path, {code: file.contents});
     }
   }
 
   _transform(file, encoding, callback) {
     if (file.path.includes('.html')) {
       file.contents = this.split(file);
+      file.js = this.js;
+      file.css = this.css;
+      this.css = [];
+      this.js = [];
     }
     callback(null, file);
   }
@@ -41,8 +48,7 @@ class Source extends Transform {
 
   split(file) {
     let { contents } = file;
-    const { path } = file;
-
+    const path = relative(this.root, file.path);
     // convert buffer to string
     contents = contents.toString();
 
@@ -108,8 +114,6 @@ class Source extends Transform {
     // push css & js to the stream
     this.pushFiles(this.css);
     this.pushFiles(this.js);
-    this.css = [];
-    this.js = [];
     return new Buffer(contents);
   }
 }

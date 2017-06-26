@@ -1,15 +1,18 @@
 import { Bundler } from 'polymer-bundler';
+import { Analyzer } from 'polymer-analyzer';
+import globals from './globals';
+import {join, resolve as resolvePath, relative, normalize, isAbsolute } from 'path'
 
 export default (entrys, {
-  cwd,
-  inlineJs,
-  inlineCss,
+  inlineJs = true,
+  inlineCss = true,
   exclude,
-  rewriteUrlsInTemplates,
-  stripComments,
+  rewriteUrlsInTemplates = false,
+  stripComments = true,
   analyzer,
   strategy,
-  urlMapper
+  urlMapper,
+  root
 }) => {
   return new Promise((resolve, reject) => {
 
@@ -21,10 +24,6 @@ export default (entrys, {
       stripComments: stripComments
     }
 
-    if (analyzer) {
-      config.analyzer = analyzer;
-    }
-
     if (strategy) {
       config.strategy = strategy;
     }
@@ -32,6 +31,35 @@ export default (entrys, {
     if (urlMapper) {
       config.urlMapper = urlMapper;
     }
+
+    class FakeFsUrlLoader {
+      constructor(files, root) {
+        this.files = files;
+      }
+
+      canLoad(url) {
+        url = normalize(url);
+        const canLoad = Boolean(this.files.has(normalize(url)));
+        if (!canLoad && isAbsolute(url)) {
+          this.url = relative(root, url);
+        } else {
+          this.url = url;
+          return canLoad;
+        }
+        return Promise.resolve(Boolean(this.files.has(url)));
+      }
+
+      load(url) {
+        return this.files.get(this.url).code.toString();
+      }
+    }
+
+    config.analyzer = new Analyzer({
+      urlLoader: new FakeFsUrlLoader(globals('bundle'), root)
+    });
+
+    config.inlineCss = true;
+    config.inlineJs = true
 
     const bundler = new Bundler(config);
 
