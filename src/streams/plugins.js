@@ -16,7 +16,8 @@ class Plugins extends Transform {
             file = await plugin.css(file);
           } else if (file.path.includes('.js') && plugin.js) {
             file = await plugin.js(file);
-          } else if (file.path.includes('.html') && plugin.html) {
+          } else if (file.path.includes('.html') &&
+                    !file.path.includes('.html_') && plugin.html) {
             file = await plugin.html(file);
           }
         }
