@@ -21,7 +21,7 @@ class Destination extends Writable {
     async function gen(self) {
       try {
         // try to create the destination
-        let dir = join(self.destination, relative(self.root, chunck.path));
+        let dir = join(self.destination, chunck.path);
         // when destination doen't include the destination dir try joining it.
         if (!dir.includes(self.destination)) {
           dir = join(self.destination, dir);

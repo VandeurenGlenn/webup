@@ -72,7 +72,7 @@ class Join extends Transform {
         // self.bundle = {};
         callback(null, file)
       } else {
-        callback(null, {path, contents})
+        callback(null, {path: relative(self.root, path), contents})
       }
     }
     return gen(this);

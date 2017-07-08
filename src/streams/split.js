@@ -18,8 +18,10 @@ class Source extends Transform {
   pushFiles(files) {
     for (const file of files) {
       this.push(new vinylFile(file));
+      const bundle = globals('bundle') || new Map();
       // add css, js to bundle
-      globals('bundle').set(file.path, {code: file.contents});
+      bundle.set(file.path, {code: file.contents});
+      globals('bundle', bundle)
     }
   }
 
