@@ -9,8 +9,8 @@
     "@types/chai" "*"
 
 "@types/chai@*":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.0.0.tgz#4c9adabd2d04265769e6d9e847e86cc404dc7dcd"
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.0.1.tgz#37fea779617cfec3fd2b19a0247e8bbdd5133bf6"
 
 "@types/chalk@^0.4.30":
   version "0.4.31"
@@ -549,8 +549,8 @@ babel-types@^6.19.0, babel-types@^6.24.1, babel-types@^6.25.0:
     to-fast-properties "^1.0.1"
 
 babylon@^6.17.2:
-  version "6.17.3"
-  resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.17.3.tgz#1327d709950b558f204e5352587fd0290f8d8e48"
+  version "6.17.4"
+  resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.17.4.tgz#3e8b7402b88d22c3423e137a1577883b15ff869a"
 
 backed@^0.4.0:
   version "0.4.0"
@@ -1006,7 +1006,7 @@ inflight@^1.0.4:
     once "^1.3.0"
     wrappy "1"
 
-inherits@2, inherits@^2.0.1, inherits@~2.0.1:
+inherits@2, inherits@^2.0.1, inherits@~2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
@@ -1438,8 +1438,8 @@ pinkie@^2.0.0:
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
 
 polymer-analyzer@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/polymer-analyzer/-/polymer-analyzer-2.1.0.tgz#f6ddc561626194774dfc17cdb49d73ea62c9bcfd"
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/polymer-analyzer/-/polymer-analyzer-2.2.0.tgz#161b7b04bf44f33c87d413c0a39e9fad733a1f4e"
   dependencies:
     "@types/chai-subset" "^1.3.0"
     "@types/chalk" "^0.4.30"
@@ -1517,14 +1517,14 @@ randomatic@^1.1.3:
     kind-of "^4.0.0"
 
 readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.1.5:
-  version "2.2.11"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.2.11.tgz#0796b31f8d7688007ff0b93a8088d34aa17c0f72"
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.2.tgz#5a04df05e4f57fe3f0dc68fdd11dc5c97c7e6f4d"
   dependencies:
     core-util-is "~1.0.0"
-    inherits "~2.0.1"
+    inherits "~2.0.3"
     isarray "~1.0.0"
     process-nextick-args "~1.0.6"
-    safe-buffer "~5.0.1"
+    safe-buffer "~5.1.0"
     string_decoder "~1.0.0"
     util-deprecate "~1.0.1"
 
@@ -1663,9 +1663,9 @@ rollup-pluginutils@^2.0.1:
     estree-walker "^0.3.0"
     micromatch "^2.3.11"
 
-safe-buffer@~5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.0.1.tgz#d263ca54696cd8a306b5ca6551e92de57918fbe7"
+safe-buffer@~5.1.0:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
 shady-css-parser@0.0.8:
   version "0.0.8"
@@ -1696,10 +1696,10 @@ stream-shift@^1.0.0:
   resolved "https://registry.yarnpkg.com/stream-shift/-/stream-shift-1.0.0.tgz#d5c752825e5367e786f78e18e445ea223a155952"
 
 string_decoder@~1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.0.2.tgz#b29e1f4e1125fa97a10382b8a533737b7491e179"
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.0.3.tgz#0fc67d7c141825de94282dd536bec6b9bce860ab"
   dependencies:
-    safe-buffer "~5.0.1"
+    safe-buffer "~5.1.0"
 
 strip-ansi@^3.0.0:
   version "3.0.1"
@@ -1801,8 +1801,8 @@ type-check@~0.3.2:
     prelude-ls "~1.1.2"
 
 typescript@^2.2.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.4.0.tgz#aef5a8d404beba36ad339abf079ddddfffba86dd"
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.4.1.tgz#c3ccb16ddaa0b2314de031e7e6fee89e5ba346bc"
 
 typical@^2.6.0:
   version "2.6.1"
@@ -1880,22 +1880,22 @@ webup-plugin-split@^1.0.1:
     dom5 "^2.3.0"
     parse5 "^3.0.2"
 
-webup-preset-bundle@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/webup-preset-bundle/-/webup-preset-bundle-1.0.0.tgz#007f0859a548e082c43531ffdc02dda756fdd4d8"
+webup-preset-bundle@^1.0.0, webup-preset-bundle@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/webup-preset-bundle/-/webup-preset-bundle-1.1.1.tgz#398e5f64d3703302304d486781fae61a12da6764"
   dependencies:
     polymer-bundler "^2.0.3"
 
-webup-preset-default@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/webup-preset-default/-/webup-preset-default-1.0.2.tgz#63f47d9784210d7e55202f4aa192c0f12fd73c62"
+webup-preset-default@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/webup-preset-default/-/webup-preset-default-1.1.0.tgz#423e318ec2331ff5708185c4d1fa9ca462cbffeb"
   dependencies:
     webup-preset-bundle "^1.0.0"
     webup-preset-http2 "^1.0.1"
 
-webup-preset-http2@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/webup-preset-http2/-/webup-preset-http2-1.0.1.tgz#0e547e18e17a4f5d6bae5f09dac005a2697011fb"
+webup-preset-http2@^1.0.1, webup-preset-http2@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/webup-preset-http2/-/webup-preset-http2-1.1.0.tgz#4fde865d6a20112d8176b9c4ef09c2a0ad120ce4"
   dependencies:
     webup-plugin-split "^1.0.1"
 

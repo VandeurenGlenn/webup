@@ -7,7 +7,7 @@ export default (entrys, {
   inlineJs = true,
   inlineCss = true,
   exclude,
-  rewriteUrlsInTemplates = false,
+  rewriteUrlsInTemplates = true,
   stripComments = true,
   analyzer,
   strategy,
@@ -39,30 +39,26 @@ export default (entrys, {
 
       canLoad(url) {
         url = normalize(url);
-        const canLoad = Boolean(this.files.has(normalize(url)));
+        const canLoad = Boolean(this.files.has(url));
         if (!canLoad && isAbsolute(url)) {
           this.url = relative(root, url);
         } else {
           this.url = url;
           return canLoad;
         }
-        return Promise.resolve(Boolean(this.files.has(url)));
+        return Promise.resolve(Boolean(this.files.has(this.url)));
       }
 
       load(url) {
-        return this.files.get(this.url).code.toString();
+        return this.files.get(this.url).toString();
       }
     }
 
     config.analyzer = new Analyzer({
-      urlLoader: new FakeFsUrlLoader(globals('bundle'), root)
+      urlLoader: new FakeFsUrlLoader(globals('bundleMap'), root)
     });
 
-    config.inlineCss = true;
-    config.inlineJs = true
-
     const bundler = new Bundler(config);
-
     // TODO: Use more dep options
     bundler.generateManifest(entrys).then((manifest) => {
       bundler.bundle(manifest).then(result => resolve(result.documents));

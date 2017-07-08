@@ -63,6 +63,6 @@ export default (map, options) => {
     }
     // run bundle plugins if any
   }
-  gen();
+  return gen();
 
 };

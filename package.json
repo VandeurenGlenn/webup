@@ -24,7 +24,8 @@
     "underscore": "^1.8.3",
     "vinyl": "^2.0.2",
     "vinyl-read": "^1.0.0",
-    "webup-preset-default": "^1.0.2"
+    "webup-preset-bundle": "^1.1.1",
+    "webup-preset-default": "^1.1.0"
   },
   "scripts": {
     "test": "mocha"
@@ -98,6 +99,6 @@
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-json": "^2.1.1",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "webup-preset-http2": "^1.0.1"
+    "webup-preset-http2": "^1.1.0"
   }
 }

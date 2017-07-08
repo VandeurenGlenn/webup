@@ -13,25 +13,32 @@ import bundler from './streams/bundler';
 import bundle from './utils/bundle';
 import dest from './streams/dest';
 
+const promiseBuild = options => {
+  return new Promise((resolve, reject) => {
+    pipe(
+      source(options),
+      load(options),
+      resolveImports(options),
+      split(options),
+      plugins(options),
+      join(options),
+      bundler(options)
+    ).pipe(dest(options).on('finished', map => {
+      resolve(map);
+    }));
+  });
+}
 
 const build = options => {
   return new Promise((resolve, reject) => {
     async function gen() {
       try {
         // const cleaned = await del(dirname(options.dest));
-
-        pipe(
-          source(options),
-          load(options),
-          resolveImports(options),
-          split(options),
-          plugins(options),
-          join(options),
-          bundler(options)
-        ).pipe(dest(options).on('finished', map => {
-          if (map) resolve(bundle(map, options));
-          else resolve();
-        }));
+        const map = await promiseBuild(options);
+        if (map) {
+          const done = await bundle(map, options);
+        }
+        resolve();
       } catch (error) {
         return reject(error);
       }

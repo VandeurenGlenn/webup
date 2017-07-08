@@ -30,22 +30,44 @@ describe('description', () => {
     }).then(() => done()).catch((err) => done(err));
   });
 
-  it('bundles html using the http2 preset', (done) => {
-    webup({
-      entry: 'test/html/index.html',
-      shell: 'test/html/test-app.html',
-      dest: 'build/index.html',
-      fragments: [
-        'test/html/views/view-0.html',
-        'test/html/views/view-1.html',
-        'test/html/views/view-2.html',
-        'test/html/views/view-3.html'
-      ],
-      presets: ['http2'],
-      // external: ['backed'],
-      // root: '.build',
-      sources: ['./test/html/**/*']
-    }).then(() => done()).catch((err) => done(err));
-  });
+  // it('bundles html using the http2 preset', (done) => {
+  //   webup({
+  //     entry: 'test/html/index.html',
+  //     shell: 'test/html/test-app.html',
+  //     dest: 'build/index.html',
+  //     fragments: [
+  //       'test/html/views/view-0.html',
+  //       'test/html/views/view-1.html',
+  //       'test/html/views/view-2.html',
+  //       'test/html/views/view-3.html'
+  //     ],
+  //     presets: ['http2'],
+  //     // external: ['backed'],
+  //     // root: '.build',
+  //     sources: ['./test/html/**/*']
+  //   }).then(() => done()).catch((err) => done(err));
+  // });
+
+  // it('bundles html using the rollup preset', (done) => {
+  //   webup({
+  //     entry: 'test/html/index.html',
+  //     shell: 'test/html/test-app.html',
+  //     dest: 'build/rollup/index.html',
+  //     fragments: [
+  //       'test/html/views/view-0.html',
+  //       'test/html/views/view-1.html',
+  //       'test/html/views/view-2.html',
+  //       'test/html/views/view-3.html'
+  //     ],
+  //     presets: [{
+  //       plugins: ['rollup'],
+  //       bundle: true
+  //     }],
+  //     // external: ['backed'],
+  //     // root: '.build',
+  //     sources: ['./test/html/**/*']
+  //     // sources: ['./test/html/**/*']
+  //   }).then(() => done()).catch((err) => done(err));
+  // });
 
 });

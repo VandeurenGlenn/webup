@@ -8,6 +8,7 @@ class Plugins extends Transform {
   }
 
   _transform(file, encoding, callback) {
+
     async function gen(self) {
       try {
         for (const plugin of self.plugins) {
