@@ -7,7 +7,7 @@ export default (entrys, {
   inlineJs = true,
   inlineCss = true,
   exclude,
-  rewriteUrlsInTemplates = true,
+  rewriteUrlsInTemplates = false,
   stripComments = true,
   analyzer,
   strategy,
