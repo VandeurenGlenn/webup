@@ -112,7 +112,7 @@ class ResolveImports extends Transform {
           }
           // TODO: create importsMap ...
           if (self.filter(id) && !id.includes('.html_.')) {
-            if (!self.duplicates[id]) {
+            if (self.set[id] && !self.duplicates[id]) {
               if (self.sharedImports.get(id)) {
                 self.sharedImports.set(id, (self.sharedImports.get(id) + 1));
               } else {
@@ -123,7 +123,6 @@ class ResolveImports extends Transform {
               // when id is included load & push it
               const contents = await readFile(id);
               let file = new vinylFile({path: id, contents: contents});
-
               // run load
               file = await loadImport(file, self.plugins);
               self.set[id] = file.contents;
