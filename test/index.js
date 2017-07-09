@@ -25,7 +25,7 @@ describe('description', () => {
       ],
       presets: ['default'],
       // external: ['backed'],
-      // root: '.build',
+      root: 'test/html',
       sources: ['./test/html/**/*']
     }).then(() => done()).catch((err) => done(err));
   });
