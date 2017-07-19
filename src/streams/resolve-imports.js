@@ -120,15 +120,18 @@ class ResolveImports extends Transform {
               }
               // return resolve();
             } else if (!self.set[id]) {
-              // when id is included load & push it
-              const contents = await readFile(id);
-              let file = new vinylFile({path: id, contents: contents});
-              // run load
-              file = await loadImport(file, self.plugins);
-              self.set[id] = file.contents;
-              self.push(file);
-              const done = await self.handleImports(dirname(id), self.getImports(file.contents.toString()));
-              // return reslve();
+              try {
+                // when id is included load & push it
+                const contents = await readFile(id);
+                let file = new vinylFile({path: id, contents: contents});
+                // run load
+                file = await loadImport(file, self.plugins);
+                self.set[id] = file.contents;
+                self.push(file);
+                const done = await self.handleImports(dirname(id), self.getImports(file.contents.toString()));
+              } catch (e) {
+                console.warn(e);
+              }
             }
           }
         }
