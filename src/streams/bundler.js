@@ -26,18 +26,5 @@ class Bundler extends Transform {
     }
   }
 
-  /**
-   * @return {array} containing entry & fragments
-   */
-  createEntrys({entry, fragments}) {
-    if (!entry || !fragments) {
-      this.emit('error',
-        new Error(entry ? 'fragments undefined' : 'entry undefined')
-      );
-      return;
-    }
-    return [entry, ...fragments];
-  }
-
 }
 export default options => new Bundler(options);

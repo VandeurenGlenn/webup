@@ -51,8 +51,6 @@ export default (map, options) => {
     //     }
     //   });
     // })
-
-    // console.log(map);
     for (const path of external) {
       await bundle({path, map: map.get(path), external}, options.plugins);
     }

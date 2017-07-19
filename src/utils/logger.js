@@ -5,7 +5,7 @@ import chalk from 'chalk';
  * @param {string|object|array|number|boolean} input
  * @param {string} color
  */
-const chalkify = (input, color = 'white') => {
+export const chalkify = (input, color = 'white') => {
   // check if input is object & stringify when true
   if (typeof input === 'object') {
     input = JSON.stringify(input);

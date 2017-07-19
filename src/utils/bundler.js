@@ -57,7 +57,6 @@ export default (entrys, {
     config.analyzer = new Analyzer({
       urlLoader: new FakeFsUrlLoader(globals('bundleMap'), root)
     });
-
     const bundler = new Bundler(config);
     // TODO: Use more dep options
     bundler.generateManifest(entrys).then((manifest) => {

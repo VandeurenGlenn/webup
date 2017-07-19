@@ -12,18 +12,49 @@ describe('description', () => {
   //   }
   // });
 
-  it('bundles html using the default preset', (done) => {
+  // it('bundles html app using the default preset', (done) => {
+  //   webup({
+  //     entry: 'test/html/index.html',
+  //     shell: 'test/html/test-app.html',
+  //     dest: 'build/index.html',
+  //     fragments: [
+  //       'test/html/views/view-0.html',
+  //       'test/html/views/view-1.html',
+  //       'test/html/views/view-2.html',
+  //       'test/html/views/view-3.html'
+  //     ],
+  //     presets: ['default'],
+  //     // external: ['backed'],
+  //     root: 'test/html',
+  //     sources: ['./test/html/**/*']
+  //   }).then(() => done()).catch((err) => done(err));
+  // });
+
+  // it('bundles html element using the default preset', (done) => {
+  //   webup({
+  //     entry: 'test/html/test-app.html',
+  //     // shell: 'test/html/test-app.html',
+  //     dest: 'build/element/index.html',
+  //     element: true,
+  //     fragments: [
+  //       'test/html/views/view-0.html',
+  //       'test/html/views/view-1.html',
+  //       'test/html/views/view-2.html',
+  //       'test/html/views/view-3.html'
+  //     ],
+  //     presets: ['default'],
+  //     // external: ['backed'],
+  //     root: 'test/html',
+  //     sources: ['./test/html/**/*']
+  //   }).then(() => done()).catch((err) => done(err));
+  // });
+
+  it('bundles html element using the default preset', (done) => {
     webup({
-      entry: 'test/html/index.html',
-      shell: 'test/html/test-app.html',
-      dest: 'build/index.html',
-      fragments: [
-        'test/html/views/view-0.html',
-        'test/html/views/view-1.html',
-        'test/html/views/view-2.html',
-        'test/html/views/view-3.html'
-      ],
-      presets: ['default'],
+      entry: 'test/html/test-app.html',
+      // shell: 'test/html/test-app.html',
+      dest: 'build/element/test-app.html',
+      presets: ['element'],
       // external: ['backed'],
       root: 'test/html',
       sources: ['./test/html/**/*']

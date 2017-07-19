@@ -17,6 +17,7 @@ const defaultOptions = {
   cwd: process.cwd(),
   plugins: [],
   include: null,
+  element: false,
   fragments: [],
   sources: [],
   presets: ['default'],
@@ -104,7 +105,7 @@ const validateOptions = options => {
 const validateOptionsType = options => {
   if (options.type === 'dom') {
     // check if html module or app (an app is defined as in having a shell & fragments).
-    if (!Boolean(options.fragments) && Boolean(options.shell) || !Boolean(options.shell) && Boolean(options.fragments)) {
+    if (!Boolean(options.fragments) && Boolean(options.shell) || !Boolean(options.shell) && Boolean(options.fragments) && !options.element) {
       return Promise.reject(
         new Error(`options.${options.fragments ? 'shell' : 'fragments'} undefined, checkout docs to learn more.`)
       );
@@ -134,12 +135,12 @@ export default options => {
         } else {
           return reject(`${extname(options.entry)} is not supported`);
         }
-        options = await validateOptionsType(options);
+        // options = await validateOptionsType(options);
         const presets = await requirePresets(options);
         const promises = [];
         for (const preset of presets) {
           // clone options so we don't overwrite it & extend clone with preset.
-          const config = extend(clone(options), preset);
+          const config = await validateOptionsType(extend(clone(options), preset));
           // ensure fragments is an array
           const fragments = ensureArray(config.fragments);
           // get the plugins
