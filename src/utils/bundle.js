@@ -45,7 +45,7 @@ export default (map, options) => {
       return path;
     }
 
-    const serviceWorker = options.serviceWorker || {
+    const serviceWorker = options.serviceWorker === false ? false : options.serviceWorker || {
       dest: join(dirname(options.dest), 'service-worker.js'),
       stripPrefix: stripPrefixPath(),
       staticFileGlobs: []
@@ -53,19 +53,23 @@ export default (map, options) => {
 
     const documents = await bundler(entrys, options);
     for (const id of documents.keys()) {
-      serviceWorker.staticFileGlobs.push(productionPath(id));
+      if (serviceWorker) {
+        serviceWorker.staticFileGlobs.push(productionPath(id));
+      }
       const done = await writeFile(productionPath(id), serialize(documents.get(id).ast));
     }
-    if (serviceWorker) {
-    // itterate trough map and add external css files to serviceWorkerSet
     // temporary workaround untill issue #4 is fixed
-      for (const entry of map.entries()) {
-        if (entry[0].match(/[a-z].css/)) {
-          const path = productionPath(entry[0]);
+    // itterate trough map and add external css files to staticFileGlobs & write to build
+    for (const entry of map.entries()) {
+      if (entry[0].match(/[a-z].css/)) {
+        const path = productionPath(entry[0]);
+        if (serviceWorker) {
           serviceWorker.staticFileGlobs.push(path);
-          const done = await writeFile(path, entry[1].code.toString());
         }
+        const done = await writeFile(path, entry[1].code.toString());
       }
+    }
+    if (serviceWorker) {
       write(serviceWorker.dest, serviceWorker);
     }
     // run bundle plugins if any
