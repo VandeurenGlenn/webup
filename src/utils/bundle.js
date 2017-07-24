@@ -50,13 +50,6 @@ export default (map, options) => {
       stripPrefix: stripPrefixPath(),
       staticFileGlobs: []
     }
-    // const external = map.forEach(({ imports }) => {
-    //   if (imports) imports.forEach(importee => {
-    //     if (importee.includes('html_.js')) {
-    //
-    //     }
-    //   });
-    // })
 
     const documents = await bundler(entrys, options);
     for (const id of documents.keys()) {

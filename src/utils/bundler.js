@@ -61,8 +61,7 @@ export default (entrys, {
 
     bundler.generateManifest(entrys).then(manifest => {
       bundler.bundle(manifest).then(bundle => {
-        generateServiceWorker(bundle.documents)
-          .then(documents => resolve(documents))
+        resolve(bundle.documents);
       });
     });
   });
