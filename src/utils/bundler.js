@@ -1,7 +1,7 @@
 import { Bundler } from 'polymer-bundler';
 import { Analyzer } from 'polymer-analyzer';
 import globals from './globals';
-import {join, resolve as resolvePath, relative, normalize, isAbsolute } from 'path'
+import { relative, normalize, isAbsolute } from 'path';
 
 export default (entrys, {
   inlineJs = true,
@@ -58,9 +58,12 @@ export default (entrys, {
       urlLoader: new FakeFsUrlLoader(globals('bundleMap'), root)
     });
     const bundler = new Bundler(config);
-    // TODO: Use more dep options
-    bundler.generateManifest(entrys).then((manifest) => {
-      bundler.bundle(manifest).then(result => resolve(result.documents));
+
+    bundler.generateManifest(entrys).then(manifest => {
+      bundler.bundle(manifest).then(bundle => {
+        generateServiceWorker(bundle.documents)
+          .then(documents => resolve(documents))
+      });
     });
   });
 }

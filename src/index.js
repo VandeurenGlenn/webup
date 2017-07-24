@@ -13,7 +13,8 @@ sourceMapSupport.install();
 const defaultOptions = {
   entry: null,
   dest: null,
-  sourceMap: true,
+  // sourceMap: true,
+  sourcemaps: true,
   cwd: process.cwd(),
   plugins: [],
   include: null,
@@ -92,7 +93,7 @@ const requirePresets = options => {
 }
 
 const validateOptions = options => {
-  const expected = ['entry', 'dest', 'sourceMap', 'presets'];
+  const expected = ['entry', 'dest', 'presets'];
   for (const option of expected) {
     if (!options[option]) {
       return Promise.reject(new Error(`${option} is undefined`));

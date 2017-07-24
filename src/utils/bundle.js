@@ -1,10 +1,11 @@
 'use strict';
 import createEntrys from './create-entrys';
 import { bundle } from './plugins-runner';
-import { resolve, dirname, join, relative } from 'path';
+import { resolve, dirname, join, relative, sep as separator } from 'path';
 import bundler from './bundler';
 import { serialize } from 'parse5';
 import writeFile from './write-file';
+import { write } from 'sw-precache';
 
 const forKey = (map, cb) => {
   for (const key of map.keys) {
@@ -32,18 +33,23 @@ export default (map, options) => {
       return relative(options.root, url)
     });
 
-    const external = options.external || [];
-
-    // const external = createExternal(map);
-    // add html_.js files to external
-    for (const key of map.keys()) {
-      const url = map.get(key);
-      if (key.includes('html_.js')) {
-        external.push(key)
-      }
+    const productionPath = path => {
+      return join(dirname(options.dest), path);
     }
 
-    options.external = external;
+    const stripPrefixPath = () => {
+      let path = '';
+      for (const string of productionPath('').split(separator)) {
+        path += `${string}/`;
+      }
+      return path;
+    }
+
+    const serviceWorker = options.serviceWorker || {
+      dest: join(dirname(options.dest), 'service-worker.js'),
+      stripPrefix: stripPrefixPath(),
+      staticFileGlobs: []
+    }
     // const external = map.forEach(({ imports }) => {
     //   if (imports) imports.forEach(importee => {
     //     if (importee.includes('html_.js')) {
@@ -51,13 +57,23 @@ export default (map, options) => {
     //     }
     //   });
     // })
-    for (const path of external) {
-      await bundle({path, map: map.get(path), external}, options.plugins);
-    }
 
     const documents = await bundler(entrys, options);
     for (const id of documents.keys()) {
-      const done = await writeFile(join(dirname(options.dest), id), serialize(documents.get(id).ast));
+      serviceWorker.staticFileGlobs.push(productionPath(id));
+      const done = await writeFile(productionPath(id), serialize(documents.get(id).ast));
+    }
+    if (serviceWorker) {
+    // itterate trough map and add external css files to serviceWorkerSet
+    // temporary workaround untill issue #4 is fixed
+      for (const entry of map.entries()) {
+        if (entry[0].match(/[a-z].css/)) {
+          const path = productionPath(entry[0]);
+          serviceWorker.staticFileGlobs.push(path);
+          const done = await writeFile(path, entry[1].code.toString());
+        }
+      }
+      write(serviceWorker.dest, serviceWorker);
     }
     // run bundle plugins if any
   }
