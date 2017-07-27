@@ -70,6 +70,7 @@ class ResolveImports extends Transform {
       // set bundle
       bundle.set(relative(self.root, file.path), {
         code: file.contents,
+        originalPath: file.path,
         imports: self.imports
         // commented untill dependency bundler is implemented
         // sharedImports: sharedImports

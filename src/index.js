@@ -1,5 +1,5 @@
 'use strict';
-import { resolve, extname } from 'path';
+import { resolve, extname, join } from 'path';
 import build from './build';
 // import bundle from './bundle';
 import ensureArray from './utils/ensure-array';
@@ -18,11 +18,13 @@ const defaultOptions = {
   cwd: process.cwd(),
   plugins: [],
   include: null,
+  external: [''],
   element: false,
   fragments: [],
   sources: [],
   presets: ['default'],
-  exclude: ['reload/**/*.js'] // exclude common libs
+  exclude: ['reload/**/*.js'], // exclude common libs
+  modulesPath: 'node_modules'
 }
 
 const requirePlugins = options => {
@@ -30,7 +32,7 @@ const requirePlugins = options => {
     const set = [];
     const plugins = ensureArray(options.plugins).map(plugin => {
       const name = `webup-plugin-${plugin}`;
-      plugin = require(name)(options);
+      plugin = require(join(options.cwd, options.modulesPath, name))(options);
       if (Array.isArray(plugin)) {
         for (const task of plugin) {
           if (typeof task === 'object') {
@@ -66,7 +68,7 @@ const requirePreset = (preset, options, cb) => {
     cb(null, preset);
   } else if (typeof preset === 'string') {
     const name = `webup-preset-${preset}`;
-    preset = require(name)(options);
+    preset = require(join(options.cwd, options.modulesPath, name))(options);
     requirePreset(preset, options, (error, item) => {
       cb(null, item);
     });

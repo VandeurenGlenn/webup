@@ -30,24 +30,25 @@ describe('description', () => {
   //   }).then(() => done()).catch((err) => done(err));
   // });
 
-  // it('bundles html element using the default preset', (done) => {
-  //   webup({
-  //     entry: 'test/html/test-app.html',
-  //     // shell: 'test/html/test-app.html',
-  //     dest: 'build/element/index.html',
-  //     element: true,
-  //     fragments: [
-  //       'test/html/views/view-0.html',
-  //       'test/html/views/view-1.html',
-  //       'test/html/views/view-2.html',
-  //       'test/html/views/view-3.html'
-  //     ],
-  //     presets: ['default'],
-  //     // external: ['backed'],
-  //     root: 'test/html',
-  //     sources: ['./test/html/**/*']
-  //   }).then(() => done()).catch((err) => done(err));
-  // });
+  it('bundles html element using the default preset', (done) => {
+    webup({
+      entry: 'test/html/test-app.html',
+      // shell: 'test/html/test-app.html',
+      dest: 'build/element/index.html',
+      element: true,
+      fragments: [
+        'test/html/views/view-0.html',
+        'test/html/views/view-1.html',
+        'test/html/views/view-2.html',
+        'test/html/views/view-3.html'
+      ],
+      presets: ['default'],
+      plugins: ['external-images'],
+      // external: ['backed'],
+      root: 'test/html',
+      sources: ['./test/html/**/*']
+    }).then(() => done()).catch((err) => done(err));
+  });
 
   it('bundles html element using the default preset', (done) => {
     webup({

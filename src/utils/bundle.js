@@ -6,25 +6,73 @@ import bundler from './bundler';
 import { serialize } from 'parse5';
 import writeFile from './write-file';
 import { write } from 'sw-precache';
+import { createFilter } from 'rollup-pluginutils';
 
-const forKey = (map, cb) => {
-  for (const key of map.keys) {
-    cb(key);
+const isImage = require('is-image');
+const isText = require('is-text-path');
+
+Promise.properRace = promises => {
+  if (promises.length < 1) {
+    return Promise.reject('Can\'t start a race without promises!');
   }
+
+  // There is no way to know which promise is rejected.
+  // So we map it to a new promise to return the index when it fails
+  let indexPromises = promises.map((p, index) => p.catch(() => {throw index;}));
+
+  return Promise.race(indexPromises).catch(index => {
+    // The promise has rejected, remove it from the list of promises and just continue the race.
+    let p = promises.splice(index, 1)[0];
+    if (promises.length === 0) {
+      return Promise.reject('None resolved')
+    }
+    return Promise.properRace(promises);
+  });
+};
+
+const _require = (file) => {
+  return new Promise((resolve, reject) => {
+    try {
+      file = require(file);
+    } catch (e) {
+      reject(e);
+    }
+    resolve(file);
+  });
 }
 
-const createExternal = map => {
-  const arr = [];
-  return forKey(map, key => {
-    const imports = map.get(key).imports;
-    if (imports)
-      forKey(imports, key => {
-        if (key.include('html_.js')) arr.push(key);
-      });
-  })
+const projectName = () => {
+  return new Promise((resolve, reject) => {
+    let errs = 0;
+    const promises = [
+      _require(join(process.cwd(), 'bower.json')),
+      _require(join(process.cwd(), 'package.json')),
+      _require(join(process.cwd(), 'webup.json)'))
+    ]
+    Promise.properRace(promises).then(({ name }) => {
+      resolve(name);
+    }).catch((err) => {
+      errs++;
+      if (errs === 3) {
+        console.warn('bower.json, package.json, webup.json not found', err);
+        resolve(dirname(__dirname));
+      }
+    });
+  });
 }
 
 export default (map, options) => {
+  const filter = createFilter(options.external, options.exclude);
+  const external = (id, options = {text: true, image: true}) => {
+    // id = join()
+    if (filter(id)) {
+      if (options.image && isImage(id)) return true;
+      else if (options.text && isText(id)) return true;
+      else if(!options.text && !options.image) return true;
+    }
+    return false;
+  }
+
   async function gen() {
     options.root = resolve(dirname(options.entry));
     // TODO: seperate map per entry.
@@ -45,10 +93,14 @@ export default (map, options) => {
       return path;
     }
 
+    const name = await projectName();
+
     const serviceWorker = options.serviceWorker === false ? false : options.serviceWorker || {
       dest: join(dirname(options.dest), 'service-worker.js'),
       stripPrefix: stripPrefixPath(),
-      staticFileGlobs: []
+      cacheId: name,
+      staticFileGlobs: [],
+      clientsClaim: true
     }
 
     const documents = await bundler(entrys, options);
@@ -61,7 +113,7 @@ export default (map, options) => {
     // temporary workaround untill issue #4 is fixed
     // itterate trough map and add external css files to staticFileGlobs & write to build
     for (const entry of map.entries()) {
-      if (entry[0].match(/[a-z].css/)) {
+      if (external(entry[1].originalPath) || entry[0].match(/[a-z].css/)) {
         const path = productionPath(entry[0]);
         if (serviceWorker) {
           serviceWorker.staticFileGlobs.push(path);

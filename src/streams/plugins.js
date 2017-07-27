@@ -1,10 +1,12 @@
 'use strict';
 import { Transform } from 'stream';
+const isImage = require('is-image');
 
 class Plugins extends Transform {
-  constructor({plugins}) {
+  constructor(options) {
     super({objectMode: true});
-    this.plugins = plugins;
+    this.plugins = options.plugins;
+    this.options = options;
   }
 
   _transform(file, encoding, callback) {
@@ -20,6 +22,10 @@ class Plugins extends Transform {
           } else if (file.path.includes('.html') &&
                     !file.path.includes('.html_') && plugin.html) {
             file = await plugin.html(file);
+          } else if (plugin.image && isImage(file.path)) {
+            const result = await plugin.image(file, self.options);
+            file = result.file;
+            self.options = result.options;
           }
         }
         callback(null, file);
