@@ -1,6 +1,6 @@
 {
   "name": "webup",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "description": "yet another es6/html bundler",
   "main": "dist/webup.js",
   "files": [
@@ -17,6 +17,8 @@
     "elegant-spinner": "^1.0.1",
     "glob-stream": "^6.1.0",
     "graceful-fs": "^4.1.11",
+    "is-image": "^2.0.0",
+    "is-text-path": "^1.0.1",
     "log-update": "^2.0.0",
     "mocha": "^3.4.1",
     "multipipe": "^1.0.2",
@@ -103,6 +105,7 @@
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-json": "^2.1.1",
     "rollup-plugin-node-resolve": "^3.0.0",
+    "webup-plugin-external-images": "^1.0.1",
     "webup-preset-element": "^1.0.0",
     "webup-preset-http2": "^1.1.0"
   }
