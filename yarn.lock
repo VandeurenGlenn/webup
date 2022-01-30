@@ -582,9 +582,10 @@ backed-logger@^1.0.1:
   dependencies:
     chalk "^1.1.3"
 
-backed@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/backed/-/backed-0.4.0.tgz#1453a82ea908e294d2b9501fd58b9480f8edd023"
+backed@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/backed/-/backed-0.13.0.tgz#0852aae4fa498a77c0445d5afb9999c640543929"
+  integrity sha512-X9uNRGu5Vrvsgtg6MB+5wPCOJgo4WIehWwLm3VqdSqnWFqMRxavP+301+6yP0EBvLJ8rYMVaeYrBbUSBy1fcig==
 
 balanced-match@^1.0.0:
   version "1.0.0"
