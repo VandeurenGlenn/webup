@@ -25,7 +25,7 @@
     "mz": "^2.6.0",
     "polymer-bundler": "^2.0.3",
     "rollup-pluginutils": "^2.0.1",
-    "source-map-support": "^0.4.15",
+    "source-map-support": "^0.5.21",
     "sw-precache": "^5.2.0",
     "underscore": "^1.8.3",
     "vinyl": "^2.0.2",
