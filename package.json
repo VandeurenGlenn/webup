@@ -27,7 +27,7 @@
     "rollup-pluginutils": "^2.0.1",
     "source-map-support": "^0.4.15",
     "sw-precache": "^5.2.0",
-    "underscore": "^1.8.3",
+    "underscore": "^1.13.2",
     "vinyl": "^2.0.2",
     "vinyl-read": "^1.0.0",
     "webup-preset-bundle": "^1.1.2",
